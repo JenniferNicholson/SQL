@@ -1,0 +1,94 @@
+# For this project prompt I created and queried the following database:
+
+# Author Table
+CREATE TABLE authors 
+    (id INTEGER PRIMARY KEY, 
+    name TEXT, 
+    publisher TEXT);
+
+INSERT INTO authors VALUES (1,"Sarah J. Mass", "Bloomsbury");
+INSERT INTO authors VALUES (2, "Katharine Tozer", "Murray");
+INSERT INTO authors VALUES (3, "Rupi Kaur", "Andrews McMeel");
+INSERT INTO authors VALUES (4, "Sarah Dessen", "HarperCollins");
+INSERT INTO authors VALUES (5, "Stephenie Meyer", "Brown Books");
+
+# Books Table
+CREATE TABLE books 
+    (id INTEGER PRIMARY KEY, 
+    title TEXT, 
+    author_id INTEGER);
+
+INSERT INTO books VALUES (1, "Mumfie's Uncle Samuel" , 2);
+INSERT INTO books VALUES (2, "The Sun and Her Flowers", 3);
+INSERT INTO books VALUES (3, "Mumfie Marches On", 2);
+INSERT INTO books VALUES (4, "A Court of Thorns and Roses", 1);
+INSERT INTO books VALUES (5, "A Court of Mist and Fury", 1);
+INSERT INTO books VALUES (6, "Breaking Dawn", 5);
+INSERT INTO books VALUES (7, "That Summer", 4);
+INSERT INTO books VALUES (8, "Mumfie's Magic Box", 2);
+INSERT INTO books VALUES (9, "A Court of Wings and Ruin", 1);
+INSERT INTO books VALUES (10, "A Court of Frost and Starlight", 1);
+INSERT INTO books VALUES (11, "Along for the Ride", 4);
+INSERT INTO books VALUES (12, "A Court of Silver Flames", 1);
+INSERT INTO books VALUES (13, "Here Comes Mumfie", 2);
+INSERT INTO books VALUES (14, "Crescent City", 1);
+INSERT INTO books VALUES (15, "Throne of Glass", 1);
+
+# Ratings Table
+CREATE TABLE ratings
+    (book_id INTEGER PRIMARY KEY, 
+    title TEXT, 
+    rating INTEGER);
+
+INSERT INTO ratings VALUES (1, "Mumfie's Uncle Samuel" , 3 );
+INSERT INTO ratings VALUES (2, "The Sun and Her Flowers", 3);
+INSERT INTO ratings VALUES (3, "Mumfie Marches On", 1);
+INSERT INTO ratings VALUES (4, "A Court of Thorns and Roses", 3);
+INSERT INTO ratings VALUES (5, "A Court of Mist and Fury", 5);
+INSERT INTO ratings VALUES (6, "Breaking Dawn", 1);
+INSERT INTO ratings VALUES (7, "That Summer", 4);
+INSERT INTO ratings VALUES (8, "Mumfie's Magic Box", 2);
+INSERT INTO ratings VALUES (9, "A Court of Wings and Ruin", 5);
+INSERT INTO ratings VALUES (10, "A Court of Frost and Starlight", 3 );
+INSERT INTO ratings VALUES (11, "Along for the Ride", 2);
+INSERT INTO ratings VALUES (12, "A Court of Silver Flames", 4);
+INSERT INTO ratings VALUES (13, "Here Comes Mumfie", 3);
+INSERT INTO ratings VALUES (14, "Crescent City", 5);
+INSERT INTO ratings VALUES (15, "Throne of Glass", 4);
+
+# Analysis:
+
+# Find the publisher for each book in the database.
+SELECT books.title, authors.publisher
+FROM books
+JOIN authors
+ON authors.id = books.author_id
+ORDER BY publisher; 
+
+# How many books do we have from each author?
+SELECT authors.name, COUNT(*) AS book_count
+FROM authors
+JOIN books
+ON books.author_id = authors.id
+GROUP BY authors.name
+ORDER BY book_count DESC;
+
+# What book titles do we have from the author Sarah J. Mass?
+SELECT authors.name, books.title
+FROM authors
+JOIN books
+ON authors.id = books.author_id
+WHERE authors.name = "Sarah J. Mass";
+
+# What is the top rated book by author Sarah J. Mass?
+SELECT books.title, authors.name AS author, MAX(ratings.rating) AS rating
+FROM books
+JOIN authors
+ON authors.id = books.author_id
+JOIN ratings
+ON ratings.book_id = books.id
+WHERE authors.name = "Sarah J. Mass"
+GROUP BY books.title
+HAVING rating >=4
+ORDER BY rating DESC;
+
